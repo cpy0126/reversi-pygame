@@ -15,7 +15,6 @@
 	- github: [knaw0128](https://github.com/knaw0128)
 	- name: 
 	- student_id: b09902060
-	- github:
 
 ### Repo
 ------
