@@ -1,4 +1,18 @@
 # Reversi Game Project
+
+### Team members
+
+- Team leader:
+	- name: Po-Yen Chen
+	- student_id: b09902061
+	- github: [cpy0126](https://github.com/cpy0126)
+- member:
+	- name: Tien-Sheng Cheng
+	- student_id: b09902105
+	- github: [chengtiensheng](https://github.com/chengtiensheng)
+
+### Repo
+------
 ### Prerequsite
 ```
 $ pip install pygame
@@ -82,7 +96,7 @@ For example:
     $ python3 arena.py --agent1 cwlin1998.MyAgent --agent2 base_agent.RandomAgent
     ```
 - Write your report
-    
+  
     - Put your report in README.md. Learn how to write markdown
     
 - Work as a team and learn how to use github and read code :100: 
@@ -100,7 +114,7 @@ For example:
     - Main branch should be clean. No redundacy code and bug.
     - You will need to use git branch and learn how to use git rebase.
 - (**10 %**) All members should collaborate together and use pull request.
-    
+  
     - Disccus to each other.
 - (**10 %**) Use git tag to do version control
     - For example: 
@@ -268,4 +282,4 @@ For example:
 
 1. Put your questions in issues inside this repo.
 2. **Bonus:**
-    If you find bugs :beetle: in TAs' repo. you can report it with issues and fix it with pull request then you may get bonus points. :thumbsup:
+    If you find bugs :beetle: in TAs' repo. you can report it with issues and fix it with pull request then you may get bonus points. :thumbsup::
