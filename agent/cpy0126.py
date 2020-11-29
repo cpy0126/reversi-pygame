@@ -61,10 +61,45 @@ class HumanAgent(BaseAgent):
 
 
 class RandomAgent(BaseAgent):
+    def legalMove(self,color,obs):
+        LegalMove=[]
+        for i in range(self.rows_n*self.cols_n):
+            branch,p = self.act(i,color,obs)
+            if branch and p:
+                LegalMove.append(i)
+        return LegalMove
+
+    def act(self,action,color,obs):
+        if obs[action]!=0:
+            return None,False
+        cobs=obs.copy()
+        cobs[action]=color
+        flipped = False
+        row = action//self.rows_n
+        col = action%self.rows_n
+        for i in range(-1,2):
+            for j in range(-1,2):
+                if i==0 and j==0: continue
+                x=row
+                y=col
+                ready_flip = []
+                while 0<=y+j<self.cols_n and 0<=x+i<self.rows_n:
+                    x+=i
+                    y+=j
+                    if obs[x*8+y]==color:
+                        while ready_flip:
+                            cobs[ready_flip[0]]=color
+                            ready_flip.pop(0)
+                            flipped=True
+                        break        
+                    elif cobs[x*8+y]==0: break
+                    else:
+                        ready_flip.append(x*8+y)
+        return cobs,flipped
     def step(self, reward, obs):
-        """
-        """
-        return (self.col_offset + random.randint(0, self.cols_n-1) * self.block_len, self.row_offset + random.randint(0, self.rows_n-1) * self.block_len), pygame.USEREVENT
+        legal = self.legalMove(self.color,obs)
+        index = random.randint(0,len(legal)-1)
+        return (self.col_offset + legal[index]%self.cols_n * self.block_len, self.row_offset + legal[index]//self.rows_n * self.block_len), pygame.USEREVENT
 
 class OthelloBoard:
     '''An Othello board, with a variety of methods for managing a game.'''
@@ -279,6 +314,42 @@ class ComputerAgent_1(BaseAgent):
             if maximizing:                                             #      to be better than other branches, so they become pruned
                 return bestMove, alpha
             return bestMove, beta
+
+def get_score(obs,color):
+    weight = [90,-60,10,10,10,10,-60,90
+             ,-60,-80,5,5,5,5,-80,-60
+             ,10,5,1,1,1,1,5,10
+             ,10,5,1,1,1,1,5,10
+             ,10,5,1,1,1,1,5,10
+             ,10,5,1,1,1,1,5,10
+             ,-60,-80,5,5,5,5,-80,-60
+             ,90,-60,10,10,10,10,-60,90]
+    score = [0,0]
+    for i in obs:
+        if obs[i] == -1:
+            score[0] += weight[i]
+        if obs[i] == 1:
+            score[1] += weight[i]
+    return score[0] if color ==-1 else score[1]
+
+
+class MyAgent(BaseAgent):
+    
+    def legalMove():
+        
+
+    def act():
+        
+
+
+    def step():
+        
+
+    def empty():
+        
+
+    def dfs():
+        
 
 if __name__ == "__main__":
     agent = ComputerAgent()
