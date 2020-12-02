@@ -315,40 +315,228 @@ class ComputerAgent_1(BaseAgent):
                 return bestMove, alpha
             return bestMove, beta
 
-def get_score(obs,color):
-    weight = [90,-60,10,10,10,10,-60,90
-             ,-60,-80,5,5,5,5,-80,-60
-             ,10,5,1,1,1,1,5,10
-             ,10,5,1,1,1,1,5,10
-             ,10,5,1,1,1,1,5,10
-             ,10,5,1,1,1,1,5,10
-             ,-60,-80,5,5,5,5,-80,-60
-             ,90,-60,10,10,10,10,-60,90]
-    score = [0,0]
-    for i in obs:
-        if obs[i] == -1:
-            score[0] += weight[i]
-        if obs[i] == 1:
-            score[1] += weight[i]
-    return score[0] if color ==-1 else score[1]
 
 
-class MyAgent(BaseAgent):
-    
-    def legalMove():
+
+class MyAgentMAXMIN(BaseAgent):
+
+    def get_score(self,obs):
+        weight = [[90,-60,10,10,10,10,-60,90]
+                 ,[-60,-80,5,5,5,5,-80,-60]
+                 ,[10,5,1,1,1,1,5,10]
+                 ,[10,5,1,1,1,1,5,10]
+                 ,[10,5,1,1,1,1,5,10]
+                 ,[10,5,1,1,1,1,5,10]
+                 ,[-60,-80,5,5,5,5,-80,-60]
+                 ,[90,-60,10,10,10,10,-60,90]]
+        score = [0,0]
+        for i in range(self.rows_n):
+            for j in range(self.cols_n):
+                if obs[i][j] == self.color:
+                    score[0] += weight[i][j]
+                if obs[i][j] != self.color and obs[i][j] != 0:
+                    score[1] += weight[i][j]
+        return score[0]-score[1]
         
+    def trans(self,array):
+        count = 0
+        transarray=[]
+        for i in range(8):
+            transarray.append([])
+            for j in range(8):
+                transarray[i].append(array[count])
+                count+=1
+        return transarray
 
-    def act():
+    def legalMove(self,color,obs):#有bug
+        LegalMove=[]
+        #print(obs)
+        for i in range(self.rows_n):
+            for j in range(self.cols_n):
+                cobs= self.act(i,j,color,copy.deepcopy(obs))
+                #print(i,j,cobs)
+                if cobs!=None:
+                    LegalMove.append((i,j))
+        return LegalMove
+
+    def act(self,x,y,color,obs):
+        if obs[x][y]!=0:
+            return None
+        cobs=copy.deepcopy(obs)
+        cobs[x][y]=color
+
+        flipped = False
+        row = x
+        col = y
+        for i in range(-1,2):
+            for j in range(-1,2):
+                if i==0 and j==0: continue
+                row=x
+                col=y
+                ready_flip = []
+                while 0<=col+j<self.cols_n and 0<=row+i<self.rows_n:
+                    row+=i
+                    col+=j
+                    if obs[row][col]==color:
+                        while ready_flip:
+                            cobs[ready_flip[0][0]][ready_flip[0][1]]=color
+                            ready_flip.pop(0)
+                            flipped=True
+                        break
+                    elif obs[row][col]==0: break
+                    else:
+                        ready_flip.append((row,col))
+        if flipped:
+            return cobs
+        else:
+            return None
+
+    def step(self,reward, obs):
+        bestMove = self.dfs(self.trans(obs),self.color,3)[0]
+        return (self.col_offset + (bestMove[1]) * self.block_len, self.row_offset + (bestMove[0]) * self.block_len), pygame.USEREVENT
+
+    def dfs(self,obs,cur_color,steps):
+        if steps == 0 :
+            return None,self.get_score(copy.deepcopy(obs))
+        legal_move = self.legalMove(cur_color,copy.deepcopy(obs))
+        if not legal_move:
+            return [None,self.get_score(copy.deepcopy(obs))]
+        bestmove=[(-1,-1),0]
+        corner = [(0,0),(0,7),(7,0),(7,7)]
+        my_choose = -10000000
+        opponent_choose = 10000000
+        for i in range(len(legal_move)):
+            for j in range(4):
+                if legal_move[i]==corner[j]:
+                    branch = self.act(legal_move[i][0],legal_move[i][1],cur_color,copy.deepcopy(obs))
+                    return[legal_move[i],self.get_score(branch)]
+            branch = self.act(legal_move[i][0],legal_move[i][1],cur_color,copy.deepcopy(obs))
+            temp = self.dfs(branch,-1*cur_color,steps-1)
+            score =temp[1]
+            if cur_color == self.color:
+                if my_choose < score:
+                    my_choose = score
+                    bestmove[0] = legal_move[i]
+                    bestmove[1] = score
+            else:
+                if opponent_choose > score:
+                    opponent_choose = score
+                    bestmove[0] = legal_move[i]
+                    bestmove[1] = score
+        if bestmove[0]==(-1,-1):
+            return [None,self.get_score(copy.deepcopy(obs))]
+        return bestmove
+
+class MyAgentAB(BaseAgent):
+
+    def get_score(self,obs):
+        weight = [[90,-60,10,10,10,10,-60,90]
+                 ,[-60,-80,5,5,5,5,-80,-60]
+                 ,[10,5,1,1,1,1,5,10]
+                 ,[10,5,1,1,1,1,5,10]
+                 ,[10,5,1,1,1,1,5,10]
+                 ,[10,5,1,1,1,1,5,10]
+                 ,[-60,-80,5,5,5,5,-80,-60]
+                 ,[90,-60,10,10,10,10,-60,90]]
+        score = [0,0]
+        for i in range(self.rows_n):
+            for j in range(self.cols_n):
+                if obs[i][j] == self.color:
+                    score[0] += weight[i][j]
+                if obs[i][j] != self.color and obs[i][j] != 0:
+                    score[1] += weight[i][j]
+        return score[0]-score[1]
         
+    def trans(self,array):
+        count = 0
+        transarray=[]
+        for i in range(8):
+            transarray.append([])
+            for j in range(8):
+                transarray[i].append(array[count])
+                count+=1
+        return transarray
+
+    def legalMove(self,color,obs):#有bug
+        LegalMove=[]
+        #print(obs)
+        for i in range(self.rows_n):
+            for j in range(self.cols_n):
+                cobs= self.act(i,j,color,copy.deepcopy(obs))
+                #print(i,j,cobs)
+                if cobs!=None:
+                    LegalMove.append((i,j))
+        return LegalMove
+
+    def act(self,x,y,color,obs):
+        if obs[x][y]!=0:
+            return None
+        cobs=copy.deepcopy(obs)
+        cobs[x][y]=color
+
+        flipped = False
+        row = x
+        col = y
+        for i in range(-1,2):
+            for j in range(-1,2):
+                if i==0 and j==0: continue
+                row=x
+                col=y
+                ready_flip = []
+                while 0<=col+j<self.cols_n and 0<=row+i<self.rows_n:
+                    row+=i
+                    col+=j
+                    if obs[row][col]==color:
+                        while ready_flip:
+                            cobs[ready_flip[0][0]][ready_flip[0][1]]=color
+                            ready_flip.pop(0)
+                            flipped=True
+                        break
+                    elif obs[row][col]==0: break
+                    else:
+                        ready_flip.append((row,col))
+        if flipped:
+            return cobs
+        else:
+            return None
+
+    def step(self,reward, obs):
+        bestMove = self.dfs(self.trans(obs),self.color,3,1000,-1000)[0]
+        return (self.col_offset + (bestMove[1]) * self.block_len, self.row_offset + (bestMove[0]) * self.block_len), pygame.USEREVENT
+
+    def dfs(self,obs,cur_color,steps,alpha,beta):
+        if steps == 0 :
+            return None,self.get_score(copy.deepcopy(obs))
+        legal_move = self.legalMove(cur_color,copy.deepcopy(obs))
+        if not legal_move:
+            return [None,self.get_score(copy.deepcopy(obs))]
+        bestmove=[(-1,-1),0]
+        corner = [(0,0),(0,7),(7,0),(7,7)]
+        for i in range(len(legal_move)):
+            for j in range(4):
+                if legal_move[i]==corner[j]:
+                    branch = self.act(legal_move[i][0],legal_move[i][1],cur_color,copy.deepcopy(obs))
+                    return[legal_move[i],beta if cur_color==self.color else alpha]
+            branch = self.act(legal_move[i][0],legal_move[i][1],cur_color,copy.deepcopy(obs))
+            temp = self.dfs(branch,-1*cur_color,steps-1,alpha,beta)
+            score =temp[1]
+            if cur_color == self.color:
+                if beta < score:
+                    beta = score
+                    bestmove[0] = legal_move[i]
+                    bestmove[1] = score
+            else:
+                if alpha > score:
+                    alpha = score
+                    bestmove[0] = legal_move[i]
+                    bestmove[1] = score
+            if alpha >= beta and alpha!=1000 and beta!=-1000:
+                break
+        if bestmove[0]==(-1,-1):
+            return [None,self.get_score(copy.deepcopy(obs))]
+        return bestmove
 
 
-    def step():
-        
-
-    def empty():
-        
-
-    def dfs():
         
 
 if __name__ == "__main__":
