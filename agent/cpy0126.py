@@ -462,7 +462,6 @@ class MyAgentR(BaseAgent):
                 if obs[i][j] == 0:
                     count+=1
         return count
-
     def step(self,reward, obs,control=2):
         rand = random.randint(0,control)
         if rand:#empty>=40
