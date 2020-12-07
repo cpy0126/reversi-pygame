@@ -3,6 +3,7 @@
 ```
 $ pip install pygame
 $ pip install tqdm
+$ pip install numpy
 ```
 ### Repo structure
 ```
@@ -68,11 +69,12 @@ For example:
         def step(self, obs, reward):
             // override this function
     ```
-    - Put your agent in agent_folder and name it using your team leader's github id
+    - Put your agent in agent_folder and name it using your team leader's github id with a suffix.
     For example:
     ```
     ├── agent
     │   ├── cwlin1998.py
+    │   ├── cwlin1998_func/    # put your other files under this folder
     │   └── base_agent.py 
     ```
     
