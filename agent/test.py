@@ -100,19 +100,6 @@ class RandomAgent(BaseAgent):
         index = random.randint(0,len(legal)-1)
         return (self.col_offset + legal[index]%self.cols_n * self.block_len, self.row_offset + legal[index]//self.rows_n * self.block_len), pygame.USEREVENT
 
-def trans(array):
-    count = 0
-    transarray = [[0,0,0,0,0,0,0,0,0,0]]
-    for i in range(1,9):
-        transarray.append([])
-        transarray[i].append(0)
-        for j in range(1,9):
-            transarray[i].append(array[count])
-            count+=1
-        transarray[i].append(0)
-    transarray.append([0,0,0,0,0,0,0,0,0,0])
-    return transarray
-
 
 class TANAGENT(BaseAgent):
 
@@ -192,25 +179,28 @@ class TANAGENT(BaseAgent):
         return count
 
     def step(self,reward, obs, control=30):
-        bestMove = self.dfs(self.trans(obs),self.color,2,2)
+        print(self.trans(obs))
+        bestMove = self.dfs(copy.deepcopy(self.trans(obs)),self.color,2,2)
         return (self.col_offset + (bestMove[1]) * self.block_len, self.row_offset + (bestMove[0]) * self.block_len), pygame.USEREVENT
 
     def dfs(self,obs,cur_color,num,cur_num):
         legal_move=legal_move = self.legalMove(cur_color,copy.deepcopy(obs))
         max_score = -1000000 *cur_color
+        bestmove = (0,0)
         if not legal_move :
             return max_score
         for i in range(len(legal_move)):
             if cur_num > 0 :
                 branch = self.act(legal_move[i][0],legal_move[i][1],cur_color,copy.deepcopy(obs))#put the legal move on board
-                score=self.dfs(copy.deepcopy(obs),-cur_color,num,cur_num-1)
+                score=self.dfs(branch,-cur_color,num,cur_num-1)
             if cur_num == 0 :
                 branch = self.act(legal_move[i][0],legal_move[i][1],cur_color,copy.deepcopy(obs))#put the legal move on board
                 score=self.get_score(branch)
+            if cur_num == num :
+                print(i,score,max_score)
             if score >= max_score:
                 max_score = score
                 bestmove = legal_move[i]
- 
         if cur_num==num :
             return bestmove
         return score
