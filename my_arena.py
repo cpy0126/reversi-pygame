@@ -9,7 +9,11 @@ import argparse
 from tqdm.auto import tqdm
 
 def run_agent(agent: BaseAgent, reward: dict, obs: dict):
-    action, event_type = agent.step(reward, obs, self.control)
+    ssa = str(agent).split(' ')[0]
+    if ssa == '<agent.cpy0126.MyAgentR' or ssa == '<agent.cpy0126.MyAgentS' :
+        action, event_type = agent.step(reward, obs, args.control)
+    else :
+        action, event_type = agent.step(reward, obs)
     reward = play_ground.act(action, event_type) # reward after an action
     return reward
 
@@ -89,7 +93,7 @@ if __name__ == "__main__":
     agent1_module = importlib.import_module("agent."+args.agent1.split('.')[0])
     agent2_module = importlib.import_module("agent."+args.agent2.split('.')[0])
 
-    agent1 = getattr(agent1_module, args.agent1.split('.')[1])(color = "black", rows_n = len(rev_board.rows), cols_n = len(rev_board.cols), width = args.width, height = args.height, control = args.control)
-    agent2 = getattr(agent2_module, args.agent2.split('.')[1])(color = "white", rows_n = len(rev_board.rows), cols_n = len(rev_board.cols), width = args.width, height = args.height, control = args.control)
+    agent1 = getattr(agent1_module, args.agent1.split('.')[1])(color = "black", rows_n = len(rev_board.rows), cols_n = len(rev_board.cols), width = args.width, height = args.height)
+    agent2 = getattr(agent2_module, args.agent2.split('.')[1])(color = "white", rows_n = len(rev_board.rows), cols_n = len(rev_board.cols), width = args.width, height = args.height)
     main(play_ground, agent1, agent2, args.rounds)
 
