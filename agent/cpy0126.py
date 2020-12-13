@@ -479,7 +479,7 @@ class MyAgentS(BaseAgent):
                     count+=1
         return count
 
-    def step(self,reward, obs, control=30):
+    def step(self,reward, obs, control=20):
         empty = self.empty(self.trans(obs))
         if empty>=control:
             bestMove = self.weight(self.trans(obs),self.color)
