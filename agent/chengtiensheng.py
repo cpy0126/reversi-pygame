@@ -194,7 +194,7 @@ class TANAGENT(BaseAgent):
 
     def dfs(self,obs,cur_color,num,cur_num):
         legal_move= self.legalMove(cur_color,copy.deepcopy(obs))
-        max_score = 1000000 *cur_color
+        max_score = -1000000 *cur_color*self.color
         bestmove = (0,0)
         score=0
         if not legal_move :
