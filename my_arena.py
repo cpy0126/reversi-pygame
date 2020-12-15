@@ -10,7 +10,7 @@ from tqdm.auto import tqdm
 
 def run_agent(agent: BaseAgent, reward: dict, obs: dict):
     ssa = str(agent).split(' ')[0]
-    if ssa == '<agent.cpy0126.MyAgentR' or ssa == '<agent.cpy0126.MyAgentS' :
+    if ssa == '<agent.cpy0126.MyAgentR' or ssa == '<agent.cpy0126.MyAgentS' or ssa == '<agent.chengtiensheng.TANAGENTR' :
         action, event_type = agent.step(reward, obs, args.control)
     else :
         action, event_type = agent.step(reward, obs)
