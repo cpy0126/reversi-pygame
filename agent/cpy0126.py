@@ -192,7 +192,6 @@ class MyAgentR(BaseAgent):
         bestmove = None
         corner = [(0,0),(0,7),(7,0),(7,7)]
         for i in range(len(legal_move)):
-
             for j in range(4): #check corners
                 if legal_move[i]==corner[j]:
                     branch = self.act(legal_move[i][0],legal_move[i][1],cur_color,copy.deepcopy(obs))
@@ -214,7 +213,6 @@ class MyAgentR(BaseAgent):
         bestmove = None
         corner = [(0,0),(0,7),(7,0),(7,7)]
         for i in range(len(legal_move)):
-
             for j in range(4): #check corners
                 if legal_move[i]==corner[j]:
                     branch = self.act(legal_move[i][0],legal_move[i][1],cur_color,copy.deepcopy(obs))
