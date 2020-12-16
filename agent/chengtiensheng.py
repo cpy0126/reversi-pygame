@@ -246,6 +246,10 @@ class TANAGENTR(BaseAgent):
         return count
 
     def step(self,reward, obs, control=10):
+        legal_move= self.legalMove(cur_color,copy.deepcopy(obs))
+        for i in range(len(legal_move)):
+            if ((legal_move[0]==1 or legal_move[0]==size-1) and (legal_move[1]==1 or legal_move[1]==size-1)):
+                return (self.col_offset + (legal_move[1]) * self.block_len, self.row_offset + (legal_move[0]) * self.block_len), pygame.USEREVENT
         rand = random.randint(0,control)
         if rand:
             bestMove = self.dfsS(self.trans(obs),self.color,1,1)
