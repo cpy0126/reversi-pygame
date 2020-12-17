@@ -74,7 +74,9 @@ class TANAGENT(BaseAgent):
         else :
             score=int(len(self.legalMove(self.color,copy.deepcopy(obs))))
         return score
-        
+
+    
+    
     def trans(self,array):
         count = 0
         transarray=[]
@@ -171,7 +173,7 @@ class TANAGENT(BaseAgent):
 
 class TANAGENTR(BaseAgent):
 
-    def get_score(self,obs):
+    def get_score1(self,obs):
         weight = [[900,-60,10,10,10,10,-60,900]
                  ,[-60,-80,5,5,5,5,-80,-60]
                  ,[10,5,1,1,1,1,5,10]
@@ -186,7 +188,18 @@ class TANAGENTR(BaseAgent):
                 if obs[i][j] == self.color:
                     score += weight[i][j]
         return score
+
+    def get_score2(self,obs):
+        num=0
+        for i in range(self.rows_n):
+                for j in range(self.cols_n):
+                    if obs[i][j] == self.color:
+                        num+=1
         
+        
+        
+        return num
+    
     def trans(self,array):
         count = 0
         transarray=[]
@@ -250,13 +263,15 @@ class TANAGENTR(BaseAgent):
     def step(self,reward, obs, control=0):
         empty=self.empty(self.trans(obs))
         
-        if empty<=40 and empty>=20 :
+        if empty<=40 and empty>=10 :
             bestMove = self.dfsS(self.trans(obs),self.color,1,1)
-        else:
-            bestMove = self.dfsW(self.trans(obs),self.color,1,1)
+        if empty<10:
+            bestMove = self.dfsW2(self.trans(obs),self.color,1,1)
+        if empty>40:
+            bestMove = self.dfsW1(self.trans(obs),self.color,1,1)
         return (self.col_offset + (bestMove[1]) * self.block_len, self.row_offset + (bestMove[0]) * self.block_len), pygame.USEREVENT
 
-    def dfsW(self,obs,cur_color,num,cur_num):
+    def dfsW2(self,obs,cur_color,num,cur_num):
         legal_move= self.legalMove(cur_color,copy.deepcopy(obs))
         max_score = -1000000 *cur_color*self.color
         bestmove = (0,0)
@@ -268,10 +283,10 @@ class TANAGENTR(BaseAgent):
                 return legal_move[i]
             if cur_num > 0 :
                 branch = self.act(legal_move[i][0],legal_move[i][1],cur_color,copy.deepcopy(obs))#put the legal move on board
-                score=self.dfsW(branch,-cur_color,num,cur_num-1)
+                score=self.dfsW2(branch,-cur_color,num,cur_num-1)
             if cur_num == 0 :
                 branch = self.act(legal_move[i][0],legal_move[i][1],cur_color,copy.deepcopy(obs))#put the legal move on board
-                score=self.get_score(branch)
+                score=self.get_score2(branch)
             #if cur_num == num :
                 #print(i,score,max_score)
             if cur_color==self.color and score >= max_score:
@@ -286,6 +301,36 @@ class TANAGENTR(BaseAgent):
             return bestmove
         return score
 
+    def dfsW1(self,obs,cur_color,num,cur_num):
+        legal_move= self.legalMove(cur_color,copy.deepcopy(obs))
+        max_score = -1000000 *cur_color*self.color
+        bestmove = (0,0)
+        score=0
+        if not legal_move :
+            return max_score
+        for i in range(len(legal_move)):
+            if (cur_num==num) and ((legal_move[i][0]==0) or (legal_move[i][0]==7) )and ((legal_move[i][1]==0) or (legal_move[i][1]==7)):
+                return legal_move[i]
+            if cur_num > 0 :
+                branch = self.act(legal_move[i][0],legal_move[i][1],cur_color,copy.deepcopy(obs))#put the legal move on board
+                score=self.dfsW1(branch,-cur_color,num,cur_num-1)
+            if cur_num == 0 :
+                branch = self.act(legal_move[i][0],legal_move[i][1],cur_color,copy.deepcopy(obs))#put the legal move on board
+                score=self.get_score1(branch)
+            #if cur_num == num :
+                #print(i,score,max_score)
+            if cur_color==self.color and score >= max_score:
+                max_score = score
+                bestmove = legal_move[i]
+                #print(max_score)
+            if cur_color==-self.color and score <= max_score:
+                max_score = score
+                bestmove = legal_move[i]
+                #print(max_score)
+        if cur_num==num :
+            return bestmove
+        return score
+    
     def dfsS(self,obs,cur_color,num,cur_num):
         legal_move= self.legalMove(cur_color,copy.deepcopy(obs))
         max_score = -1000000 *cur_color*self.color
