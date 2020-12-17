@@ -4,6 +4,7 @@ import sys
 import copy
 import random
 from pygame.constants import MOUSEBUTTONDOWN, MOUSEMOTION
+import time
 black=-1
 white=1
 empty=0
@@ -146,7 +147,7 @@ class TANAGENT(BaseAgent):
         if not legal_move :
             return max_score
         for i in range(len(legal_move)):
-            if (cur_num==num) and (legal_move[i][0]==1 or legal_move[i][0]==size-1) and (legal_move[i][1]==1 or legal_move[i][1]==size-1):
+            if (cur_num==num) and (legal_move[i][0]==1 or legal_move[i][0]==7) and (legal_move[i][1]==1 or legal_move[i][1]==7):
                 return legal_move[i]
             if cur_num > 0 :
                 branch = self.act(legal_move[i][0],legal_move[i][1],cur_color,copy.deepcopy(obs))#put the legal move on board
@@ -203,6 +204,7 @@ class TANAGENTR(BaseAgent):
                 cobs= self.act(i,j,color,copy.deepcopy(obs))
                 if cobs!=None:
                     LegalMove.append((i,j))
+        
         return LegalMove
 
     def act(self,x,y,color,obs):
@@ -245,13 +247,10 @@ class TANAGENTR(BaseAgent):
                     count+=1
         return count
 
-    def step(self,reward, obs, control=10):
-        legal_move= self.legalMove(cur_color,copy.deepcopy(obs))
-        for i in range(len(legal_move)):
-            if ((legal_move[0]==1 or legal_move[0]==size-1) and (legal_move[1]==1 or legal_move[1]==size-1)):
-                return (self.col_offset + (legal_move[1]) * self.block_len, self.row_offset + (legal_move[0]) * self.block_len), pygame.USEREVENT
-        rand = random.randint(0,control)
-        if rand:
+    def step(self,reward, obs, control=0):
+        empty=self.empty(self.trans(obs))
+        
+        if empty<=40 and empty>=20 :
             bestMove = self.dfsS(self.trans(obs),self.color,1,1)
         else:
             bestMove = self.dfsW(self.trans(obs),self.color,1,1)
@@ -265,7 +264,7 @@ class TANAGENTR(BaseAgent):
         if not legal_move :
             return max_score
         for i in range(len(legal_move)):
-            if (cur_num==num) and (legal_move[i][0]==1 or legal_move[i][0]==size-1) and (legal_move[i][1]==1 or legal_move[i][1]==size-1):
+            if (cur_num==num) and ((legal_move[i][0]==0) or (legal_move[i][0]==7) )and ((legal_move[i][1]==0) or (legal_move[i][1]==7)):
                 return legal_move[i]
             if cur_num > 0 :
                 branch = self.act(legal_move[i][0],legal_move[i][1],cur_color,copy.deepcopy(obs))#put the legal move on board
@@ -295,7 +294,7 @@ class TANAGENTR(BaseAgent):
         if not legal_move :
             return max_score
         for i in range(len(legal_move)):
-            if (cur_num==num) and (legal_move[i][0]==1 or legal_move[i][0]==size-1) and (legal_move[i][1]==1 or legal_move[i][1]==size-1):
+            if (cur_num==num) and (legal_move[i][0]==0 or legal_move[i][0]==7) and (legal_move[i][1]==0 or legal_move[i][1]==7):
                 return legal_move[i]
             if cur_num > 0 :
                 branch = self.act(legal_move[i][0],legal_move[i][1],cur_color,copy.deepcopy(obs))#put the legal move on board
