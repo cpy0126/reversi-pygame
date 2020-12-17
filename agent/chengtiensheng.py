@@ -169,7 +169,7 @@ class TANAGENT(BaseAgent):
             return bestmove
         return score
 
-class TANAGENTR(BaseAgent):
+class TANAGENTS(BaseAgent):
 
     def get_score(self,obs):
         weight = [[900,-60,10,10,10,10,-60,900]
@@ -264,7 +264,7 @@ class TANAGENTR(BaseAgent):
         if not legal_move :
             return max_score
         for i in range(len(legal_move)):
-            if (cur_num==num) and ((legal_move[i][0]==0) or (legal_move[i][0]==7) )and ((legal_move[i][1]==0) or (legal_move[i][1]==7)):
+            if (cur_num==num) and ((legal_move[i][0]==0) or (legal_move[i][0]==7) ) and ((legal_move[i][1]==0) or (legal_move[i][1]==7)):
                 return legal_move[i]
             if cur_num > 0 :
                 branch = self.act(legal_move[i][0],legal_move[i][1],cur_color,copy.deepcopy(obs))#put the legal move on board

@@ -176,7 +176,7 @@ class MyAgentR(BaseAgent):
                 if obs[i][j] == 0:
                     count+=1
         return count
-    def step(self,reward, obs,control=6):
+    def step(self,reward, obs,control=10):
         rand = random.randint(0,control)
         if rand:#empty>=40
             bestMove = self.weight(self.trans(obs),self.color)
