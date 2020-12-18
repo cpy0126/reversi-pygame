@@ -23,6 +23,19 @@
 
 - MyAgentS
 
+  This agent use DFS(depth first search) algorithm to find out the best move in the next 2~3 moves.During the game,the agent use three different ways to calculate the "score" of different states:
+  
+  1. weighted-score:In case of some positions are better in our winning strategy,we designed a weighted-board,each position has it's own weight.The function returns the sum of all position's weight our agent is taking now. 
+
+
+  2. flexibility:One of the winning strategy of reversi is to restrict other's move,so we designed a function <code> Legal_Move</code> ,which can check over the board and finds out all the position we can move.The flexibility funcion is defined by the size of this array.
+  
+
+  3. unweighted-score:At the end of game,the score is calculated by counting the number of positions our agent is taking,so this agent is used when the game is nearly over.
+  
+  We randomly choose from algorithm 1. and 2. in the first 25 steps(with about 90% of possibility to choose 1. 10% of possibility to choose 2. In the last 5 steps, we choose the third algorithm.
+ 
+  Besides all the algorithms above,we noticed that the "corner" of the board ((0,0),(0,7),(7,0),(7,7)) are the most important positions on the board ,so if we can place a piece on these position, we'll do that immediately.
 
 ### Prerequsite
 ```
