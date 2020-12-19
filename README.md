@@ -15,13 +15,10 @@
 
 - ComputerAgent_<code>$steps</code> ( Just for testing our agent's performance )
 
-  This is a agent copy from a GitHub [othello project](https://github.com/CaseyAlvarado/Zen-Master-Go/blob/a5962f40441ff0b474bb4d16ed505363287c0440/Othello/Othello.py) which using alpha-beta purning and searching the board depending on the $steps we input.
+  This is a agent copy from a GitHub [othello project](https://github.com/CaseyAlvarado/Zen-Master-Go/blob/a5962f40441ff0b474bb4d16ed505363287c0440/Othello/Othello.py) which using alpha-beta purning and searching the board depending on the steps we input.
 
-- MyAgentR
 
-  One of our agent. The 'R' means it use a <code>random.randint()</code> function to alternate the result of every game. In this agent, two scored methods are used. First, <code>get_score()</code> function give every position on the board a weight which depends on it's impotance and sum where is occupy by out agent's pieces. For the other method, we try to minimize the legal moves our opponent has after our act. Since these two way all have  a win rate about 80% when playing with RandomAgent, we decide to use the <code>random.randint()</code> function to choose which method will be used in each step. However, we found that this make our win rate descend to about 50%. So we start to develope another way to choose which method will be used in each step.
-
-- MyAgentS
+- MyAgent
 
   This agent use DFS(depth first search) algorithm to find out the best move in the next 2~3 moves.During the game,the agent use three different ways to calculate the "score" of different states:
   
