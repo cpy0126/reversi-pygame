@@ -16,17 +16,19 @@
 
 - MyAgent
 
-  This agent use DFS(depth first search) algorithm to find out the best move in the next 2~3 moves.During the game,the agent use three different ways to calculate the "score" of different states:
+  This agent use DFS (depth first search) algorithm to find out the move which leads to the highest score. During the game, our agent use two different ways to define our <code>get_score()</code> function:
   
-	1. weighted-score:In case of some positions are better in our winning strategy,we designed a weighted-board,each position has it's own weight.The function returns the sum of all position's weight our agent is taking now. 
+	(1) Weighted-score: 
 
-	2. flexibility:One of the winning strategy of reversi is to restrict other's move,so we designed a function <code> Legal_Move</code> ,which can check over the board and finds out all the position we can move.The flexibility funcion is defined by the size of this array.
+	In case of some positions are better in our winning strategy, we designed a weighted-board, each position has it's own weight. This <code>get_score()</code> function will return a score which is depended on the current board and the weight of each position.
 
-	3. unweighted-score:At the end of game,the score is calculated by counting the number of positions our agent is taking,so this agent is used when the game is nearly over.
+  (2) Unweighted-score: 
 
-  We randomly choose from algorithm 1. and 2. in the first 25 steps(with about 90% of possibility to choose 1. 10% of possibility to choose 2. In the last 5 steps, we choose the third algorithm.
-
-  Besides all the algorithms above,we noticed that the "corner" of the board ((0,0),(0,7),(7,0),(7,7)) are the most important positions on the board ,so if we can place a piece on these position, we'll do that immediately.
+  The key to win the whole game is how many score we actually have. Thus, we change our <code>get_score()</code> function from weighted-score to unweighted-score at the end of each game (empty positions are less than 10)
+  
+  Besides, in both algorithms above, we noticed that the "corners" of the board ((0,0),(0,7),(7,0),(7,7)) are the most important positions on the board . Thus, if we can place a piece on these position, we'll do that without hesitation.
+  
+  What's more, if the best move has multiple choices, we try to use a <code>random.randint()</code> function to decide to change the current best move or not. This will make our agent have variable states when facing a stable agent.
 
 ### Prerequsite
 ```
