@@ -103,14 +103,14 @@ class RandomAgent(BaseAgent):
 class MyAgent(BaseAgent):
 
     def get_score1(self,obs):
-        weight =[[900,-60,10,10,10,10,-60,900],
-                [-60,-80,5,5,5,5,-80,-60],
+        weight =[[900,-600,10,10,10,10,-600,900],
+                [-600,-800,5,5,5,5,-800,-600],
                 [10,5,1,1,1,1,5,10],
                 [10,5,1,1,1,1,1,10],
                 [10,5,1,1,1,1,5,10],
                 [10,5,1,1,1,1,5,10],
-                [-60,-80,5,5,5,5,-80,-60],
-                [900,-60,10,10,10,10,-60,900]]
+                [-600,-800,5,5,5,5,-800,-600],
+                [900,-600,10,10,10,10,-600,900]]
         score = 0
         for i in range(self.rows_n):
             for j in range(self.cols_n):
@@ -188,20 +188,10 @@ class MyAgent(BaseAgent):
 
     def step(self,reward, obs):
         empty=self.empty(self.trans(obs))
-        if self.color == white:
-            if empty<10:
-                bestMove = self.dfsW2(self.trans(obs),self.color,2,2)
-            else:
-                bestMove = self.dfsW1(self.trans(obs),self.color,2,2)
+        if empty<10:
+            bestMove = self.dfsW2(self.trans(obs),self.color,2,2)
         else:
-            if empty<10:
-                bestMove = self.dfsW2(self.trans(obs),self.color,2,2)
-            else:
-                rand = random.randint(0,10)
-                if rand:
-                    bestMove = self.dfsW1(self.trans(obs),self.color,2,2)
-                else:
-                    bestMove = self.dfsS(self.trans(obs),self.color)
+            bestMove = self.dfsW1(self.trans(obs),self.color,2,2)
         return (self.col_offset + (bestMove[1]) * self.block_len, self.row_offset + (bestMove[0]) * self.block_len), pygame.USEREVENT
 
     def dfsW2(self,obs,cur_color,num,cur_num):
